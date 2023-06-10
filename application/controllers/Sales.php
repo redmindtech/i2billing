@@ -258,6 +258,10 @@ class Sales extends Secure_Controller
 	{
 		$data = array();
 
+	
+
+		
+
 		$payment_type = $this->input->post('payment_type');
 		if($payment_type !== $this->lang->line('sales_giftcard'))
 		{
@@ -308,8 +312,9 @@ class Sales extends Secure_Controller
 					$new_giftcard_value = str_replace('$', '\$', to_currency($new_giftcard_value));
 					$data['warning'] = $this->lang->line('giftcards_remaining_balance', $giftcard_num, $new_giftcard_value);
 					$amount_tendered = min($this->sale_lib->get_amount_due(), $this->Giftcard->get_giftcard_value($giftcard_num));
-
-					$this->sale_lib->add_payment($payment_type, $amount_tendered);
+					$sales_date_1 = $this->input->post('sales_date');
+					
+					$this->sale_lib->add_payment($payment_type, $amount_tendered, $sales_date_1);
 				}
 			}
 			elseif($payment_type === $this->lang->line('sales_rewards'))
@@ -339,8 +344,9 @@ class Sales extends Secure_Controller
 						$new_reward_value = str_replace('$', '\$', to_currency($new_reward_value));
 						$data['warning'] = $this->lang->line('rewards_remaining_balance'). $new_reward_value;
 						$amount_tendered = min($this->sale_lib->get_amount_due(), $points);
+						$sales_date_1 = $this->input->post('sales_date');
 
-						$this->sale_lib->add_payment($payment_type, $amount_tendered);
+						$this->sale_lib->add_payment($payment_type, $amount_tendered, $sales_date_1);
 					}
 				}
 			}
@@ -349,21 +355,25 @@ class Sales extends Secure_Controller
 				$amount_due = $this->sale_lib->get_total();
 				$sales_total = $this->sale_lib->get_total(FALSE);
 
+				$sales_date_1 = $this->input->post('sales_date');
 				$amount_tendered = $this->input->post('amount_tendered');
-				$this->sale_lib->add_payment($payment_type, $amount_tendered);
+				
 				$cash_adjustment_amount = $amount_due - $sales_total;
+				$this->sale_lib->add_payment($payment_type, $amount_tendered, $cash_adjustment_amount, $sales_date_1);
 				if($cash_adjustment_amount <> 0)
 				{
 					$this->session->set_userdata('cash_mode', CASH_MODE_TRUE);
-					$this->sale_lib->add_payment($this->lang->line('sales_cash_adjustment'), $cash_adjustment_amount, CASH_ADJUSTMENT_TRUE);
+					$this->sale_lib->add_payment($this->lang->line('sales_cash_adjustment'), $cash_adjustment_amount, CASH_ADJUSTMENT_TRUE, $sales_date_1);
 				}
 			}
 			else
 			{
+				$sales_date_1 = $this->input->post('sales_date');
 				$amount_tendered = $this->input->post('amount_tendered');
-				$this->sale_lib->add_payment($payment_type, $amount_tendered);
+				$this->sale_lib->add_payment($payment_type, $amount_tendered, $cash_adjustment_amount,$sales_date_1);
 			}
 		}
+		log_message('debug',print_r($data,TRUE));
 
 		$this->_reload($data);
 	}
@@ -545,6 +555,9 @@ class Sales extends Secure_Controller
 		$employee_info = $this->Employee->get_info($employee_id);
 		$data['employee'] = $employee_info->first_name . ' ' . mb_substr($employee_info->last_name, 0, 1);
 
+
+		
+
 		$data['company_info'] = implode("\n", array(
 			$this->config->item('address'),
 			$this->config->item('phone')
@@ -581,6 +594,8 @@ class Sales extends Secure_Controller
 		$data['taxes'] = $tax_details[0];
 		$data['discount'] = $this->sale_lib->get_discount();
 		$data['payments'] = $this->sale_lib->get_payments();
+
+		log_message('debug',print_r($data['payments'],TRUE));
 
 		// Returns 'subtotal', 'total', 'cash_total', 'payment_total', 'amount_due', 'cash_amount_due', 'payments_cover_total'
 		$totals = $this->sale_lib->get_totals($tax_details[0]);
@@ -1275,11 +1290,16 @@ class Sales extends Secure_Controller
 	 */
 	public function save($sale_id = -1)
 	{
-		$newdate = $this->input->post('date');
+		$newdate = $this->input->post('sales_date');
+
+
+
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 
 		$date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $newdate);
 		$sale_time = $date_formatter->format('Y-m-d H:i:s');
+
+		log_message('debug',print_r('sale_time '.$sale_time,TRUE));
 
 		$sale_data = array(
 			'sale_time' => $sale_time,

@@ -32,7 +32,7 @@
 	<div class="tab-content">
 		<div class="tab-pane fade in active" id="customer_basic_info">
 			<fieldset>
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_consent'), 'consent', array('class' => 'required control-label col-xs-3')); ?>
 					<div class='col-xs-1'>
 						<?php echo form_checkbox('consent', '1', $person_info->consent == '' ? (boolean)!$this->config->item('enforce_privacy') : (boolean)$person_info->consent); ?>
@@ -138,7 +138,7 @@
 					</div>
 				<?php endif; ?>
 
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'control-label col-xs-3')); ?>
 					<div class='col-xs-1'>
 						<?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>
@@ -168,7 +168,7 @@
 				}
 				?>
 
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_date'), 'date', array('class'=>'control-label col-xs-3')); ?>
 					<div class='col-xs-8'>
 						<div class="input-group">
@@ -488,8 +488,8 @@ $(document).ready(function()
 
 		rules:
 		{
-			first_name: 'required',
-			last_name: 'required',
+			// first_name: 'required',
+			// last_name: 'required',
 			consent: 'required',
 			email:
 			{
@@ -519,8 +519,8 @@ $(document).ready(function()
 
 		messages:
 		{
-			first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
-			last_name: "<?php echo $this->lang->line('common_last_name_required'); ?>",
+			// first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
+			// last_name: "<?php echo $this->lang->line('common_last_name_required'); ?>",
 			consent: "<?php echo $this->lang->line('customers_consent_required'); ?>",
 			email: "<?php echo $this->lang->line('customers_email_duplicate'); ?>",
 			account_number: "<?php echo $this->lang->line('customers_account_number_duplicate'); ?>"

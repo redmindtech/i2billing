@@ -509,6 +509,16 @@ if(isset($success))
 				?>
 					<?php echo form_open($controller_name."/add_payment", array('id'=>'add_payment_form', 'class'=>'form-horizontal')); ?>
 						<table class="sales_table_100">
+
+
+						<tr>
+							<td><?php echo $this->lang->line('sale_today_date'); ?></td>
+							<td><?php 
+							$today = date('Y-m-d');
+							echo form_input(array('name'=>'sales_date', 'id'=>'sales_date', 'class'=>'form-control input-sm datetime', 'value'=>to_datetime(strtotime($today)), 'size'=>'5', 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>
+									</td>
+							</tr>
+
 							<tr>
 								<td><?php echo $this->lang->line('sales_payment'); ?></td>
 								<td>
@@ -668,6 +678,10 @@ if(isset($success))
 <script type="text/javascript">
 $(document).ready(function()
 {
+
+	<?php $this->load->view('partial/datepicker_locale'); ?>
+
+
 	const redirect = function() {
 		window.location.href = "<?php echo site_url('sales'); ?>";
 	};
@@ -815,6 +829,10 @@ $(document).ready(function()
 	}
 	?>
 
+		$('#sales_date').keyup(function() {
+			$.post("<?php echo site_url($controller_name.'/set_sales_date'); ?>", {sales_date: $('#sales_date').val()});
+		});
+
 	$('#sales_print_after_sale').change(function() {
 		$.post("<?php echo site_url($controller_name.'/set_print_after_sale'); ?>", {sales_print_after_sale: $(this).is(':checked')});
 	});
@@ -869,6 +887,12 @@ $(document).ready(function()
 			$('#add_payment_form').submit();
 		}
 	});
+	$('#amount_tendered').keypress(function(event) {
+		if(event.which == 13)
+		{
+			$('#sales_date').submit();
+		}
+	});
 
 	$('#finish_sale_button').keypress(function(event) {
 		if(event.which == 13)
@@ -906,7 +930,7 @@ $(document).ready(function()
 		}
 	}
 
-	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"]').change(function() {
+	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"],[name="sales_date"]').change(function() {
 		$(this).parents('tr').prevAll('form:first').submit()
 	});
 

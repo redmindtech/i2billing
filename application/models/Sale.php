@@ -576,6 +576,7 @@ class Sale extends CI_Model
 	public function save($sale_id, &$sale_status, &$items, $customer_id, $employee_id, $comment, $invoice_number,
 							$work_order_number, $quote_number, $sale_type, $payments, $dinner_table, &$sales_taxes)
 	{
+		log_message('debug',print_r($payments,TRUE));
 		if($sale_id != -1)
 		{
 			$this->clear_suspended_sale_detail($sale_id);
@@ -588,8 +589,19 @@ class Sale extends CI_Model
 			return -1;
 		}
 
+		foreach($payments as $payment)
+		{
+			$sales_date	  = $payment['sales_date'];
+		}
+
+		// $open_date = $this->input->post('open_date');
+		$open_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $sales_date);
+
+
+		log_message('debug',print_r($sales_date,TRUE));
+
 		$sales_data = array(
-			'sale_time'			=> date('Y-m-d H:i:s'),
+			'sale_time'			=> $open_date_formatter->format('Y-m-d H:i:s'),
 			'customer_id'		=> $this->Customer->exists($customer_id) ? $customer_id : NULL,
 			'employee_id'		=> $employee_id,
 			'comment'			=> $comment,
@@ -643,6 +655,8 @@ class Sale extends CI_Model
 			);
 
 			$this->db->insert('sales_payments', $sales_payments_data);
+
+			
 
 			$total_amount = floatval($total_amount) + floatval($payment['payment_amount']) - floatval($payment['cash_refund']);
 

@@ -61,29 +61,29 @@
 			</script>
 		</div> -->
 
-		<!-- <div class="form-group form-group-sm">
-			<?php //echo form_label($this->lang->line('items_stock_type'), 'stock_type', !empty($basic_version) ? array('class'=>'required control-label col-xs-3') : array('class'=>'control-label col-xs-3')); ?>
+		<div class="form-group form-group-sm">
+			<?php echo form_label($this->lang->line('items_stock_type'), 'stock_type', !empty($basic_version) ? array('class'=>'required control-label col-xs-3') : array('class'=>'control-label col-xs-3')); ?>
 			<div class="col-xs-8">
 				<label class="radio-inline">
-					<?php// echo form_radio(array(
-							// 'name'=>'stock_type',
-							// 'type'=>'radio',
-							// 'id'=>'stock_type',
-							// 'value'=>0,
-							// 'checked'=>$item_info->stock_type == HAS_STOCK)
-					//); ?> <?php// echo $this->lang->line('items_stock'); ?>
+					<?php echo form_radio(array(
+							'name'=>'stock_type',
+							'type'=>'radio',
+							'id'=>'stock_type',
+							'value'=>0,
+							'checked'=>$item_info->stock_type == HAS_STOCK)
+					); ?> <?php echo $this->lang->line('items_stock'); ?>
 				</label>
 				<label class="radio-inline">
-					<?php// echo form_radio(array(
-							// 'name'=>'stock_type',
-							// 'type'=>'radio',
-							// 'id'=>'stock_type',
-							// 'value'=>1,
-							// 'checked'=>$item_info->stock_type == HAS_NO_STOCK)
-				//	); ?><?php// echo $this->lang->line('items_nonstock'); ?>
+					<?php echo form_radio(array(
+							'name'=>'stock_type',
+							'type'=>'radio',
+							'id'=>'stock_type',
+							'value'=>1,
+							'checked'=>$item_info->stock_type == HAS_NO_STOCK)
+					); ?><?php echo $this->lang->line('items_nonstock'); ?>
 				</label>
 			</div>
-		</div> -->
+		</div>
 
 		<!-- <div class="form-group form-group-sm">
 			<?php //echo form_label($this->lang->line('items_type'), 'item_type', !empty($basic_version) ? array('class'=>'required control-label col-xs-3') : array('class'=>'control-label col-xs-3')); ?>
